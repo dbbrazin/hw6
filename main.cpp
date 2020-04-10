@@ -53,19 +53,17 @@ For the example described in the above initializer_list, you output should look 
 /*
 Print: "Copy Constructor", "Move Constructor", "Copy Assignment", "Move Assignment", "Destructor" when leaving
 the corresponding functions --  the same way I did for Lecture on Ring (3/31/2020).
-
-
 */
 
-template<typename T> Ring2D<T>::Ring2D(const initializer_list<T> &I) {
+template<typename T> Ring2D<T>::Ring2D(const initializer_list<T>& I) {
     auto start = I.begin();
     int row = *start++; //3
     int col = *start++; //4
     auto p = I.end() - 1;
     shared_ptr<Node<T>> lastInRow, lastRowHead, rowNext, firstOn;
     head = make_shared<Node<T>>(*start);
-    for(int i = 0; i < row; i++){
-        for(int j = 0; j < col; j++){
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
             shared_ptr<Node<T>> p1 = make_shared<Node<T>>(*p--);
             if (j == 0)
                 lastInRow = p1;
@@ -73,16 +71,16 @@ template<typename T> Ring2D<T>::Ring2D(const initializer_list<T> &I) {
             p1->row_next = rowNext;
             head = p1;
             if (i != 0)
-                for(int x = 0; x < col-1; x++)
+                for (int x = 0; x < col - 1; x++)
                     rowNext = rowNext->col_next;
 
-            if(i == row-1) {
+            if (i == row - 1) {
                 firstOn->row_next = p1;
                 for (int x = 0; x < col - 1; x++)
                     firstOn = firstOn->col_next;
             }
         }
-        if(i==0)
+        if (i == 0)
             firstOn = lastInRow;
         lastInRow->col_next = head;
         head->row_next = lastRowHead;
@@ -119,8 +117,8 @@ template <class T> Ring2D<T>::Ring2D(const Ring2D<T>& R) { //copy constructor
     } while (current != R.head);
 
     shared_ptr<Node<T>> lastInRow, lastRowHead, rowNext, firstOn;
-    for(int i = 0; i < row; i++){
-        for(int j = 0; j < col; j++){
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
             shared_ptr<Node<T>> p1 = make_shared<Node<T>>();
             if (j == 0)
                 lastInRow = p1;
@@ -128,16 +126,16 @@ template <class T> Ring2D<T>::Ring2D(const Ring2D<T>& R) { //copy constructor
             p1->row_next = rowNext;
             head = p1;
             if (i != 0)
-                for(int x = 0; x < col-1; x++)
+                for (int x = 0; x < col - 1; x++)
                     rowNext = rowNext->col_next;
 
-            if(i == row-1) {
+            if (i == row - 1) {
                 firstOn->row_next = p1;
                 for (int x = 0; x < col - 1; x++)
                     firstOn = firstOn->col_next;
             }
         }
-        if(i==0)
+        if (i == 0)
             firstOn = lastInRow;
         lastInRow->col_next = head;
         head->row_next = lastRowHead;
@@ -180,8 +178,8 @@ template <class T> void Ring2D<T>::operator=(const Ring2D<T>& R) { //Lvalue assi
     } while (current != R.head);
 
     shared_ptr<Node<T>> lastInRow, lastRowHead, rowNext, firstOn;
-    for(int i = 0; i < row; i++){
-        for(int j = 0; j < col; j++){
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
             shared_ptr<Node<T>> p1 = make_shared<Node<T>>();
             if (j == 0)
                 lastInRow = p1;
@@ -189,16 +187,16 @@ template <class T> void Ring2D<T>::operator=(const Ring2D<T>& R) { //Lvalue assi
             p1->row_next = rowNext;
             head = p1;
             if (i != 0)
-                for(int x = 0; x < col-1; x++)
+                for (int x = 0; x < col - 1; x++)
                     rowNext = rowNext->col_next;
 
-            if(i == row-1) {
+            if (i == row - 1) {
                 firstOn->row_next = p1;
                 for (int x = 0; x < col - 1; x++)
                     firstOn = firstOn->col_next;
             }
         }
-        if(i==0)
+        if (i == 0)
             firstOn = lastInRow;
         lastInRow->col_next = head;
         head->row_next = lastRowHead;
@@ -245,7 +243,7 @@ template<class T> Ring2D<T> Ring2D<T>::ThreeTimes() {
     shared_ptr<Node<T>> current = temp.head, rowHead = temp.head;
     do {
         do {
-            current->pValue = make_shared<T>((*current->pValue)*3);
+            current->pValue = make_shared<T>((*current->pValue) * 3);
             current = current->col_next;
         } while (current != rowHead);
         current = current->row_next;
@@ -266,20 +264,22 @@ template <class T> void Ring2D<T>::DeleteRow(int r) {
     } while (current != head);
     if (r > row) return;
     if (rowHead == head) head = head->row_next;
-    while(rowBefore->row_next != rowHead)
+    while (rowBefore->row_next != rowHead)
         rowBefore = rowBefore->row_next;
-    while(row){
+    while (row) {
         rowBefore->row_next = rowHead->row_next;
         rowBefore = rowBefore->col_next;
         rowHead = rowHead->col_next;
         row--;
     }
-    //rowHead->col_next.reset()
+    //rowHead->row_next.reset();
+    //rowHead->col_next.reset();
     rowHead.reset();
+
 }
 
-template <class T> ostream& operator<<(ostream &str, const Ring2D<T> &R) {
-    if(!R.head) return str;
+template <class T> ostream& operator<<(ostream& str, const Ring2D<T>& R) {
+    if (!R.head) return str;
     shared_ptr<Node<T>> current = R.head, rowHead = R.head;
     do {
         do {
@@ -295,12 +295,12 @@ template <class T> ostream& operator<<(ostream &str, const Ring2D<T> &R) {
 
 int main() {
 
-    Ring2D<int> R1{ 3, 4,  1, 2, 3, 4,  5, 6, 7, 8,  9, 10, 11, 12};//initializer_list
-    cout << R1 << endl<<endl;
+    Ring2D<int> R1{ 3, 4,  1, 2, 3, 4,  5, 6, 7, 8,  9, 10, 11, 12 };//initializer_list
+    cout << R1 << endl << endl;
 
 
     Ring2D<int> R2{ R1 };//copy constructor
-    cout << R2 << endl<<endl;
+    cout << R2 << endl << endl;
 
     Ring2D<int> R3;
     R3 = R1;//copy assignment
@@ -314,7 +314,7 @@ int main() {
     //destructor-- delete temp becuase it goes out of scope
     //move assignment -- Assign value from hidden copy to R4
     //destructor-- delete hedden copy because it goes out of scope
-    cout << R4 << endl<<endl;
+    cout << R4 << endl << endl;
 
 
     R4.DeleteRow(2);
@@ -326,9 +326,3 @@ int main() {
 
     return 0;
 }
-
-
-
-
-
-
